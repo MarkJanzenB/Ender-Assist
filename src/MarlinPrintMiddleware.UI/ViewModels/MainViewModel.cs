@@ -47,11 +47,20 @@ public partial class MainViewModel : ObservableObject
 
         _statusService.StatusChanged += (_, status) =>
         {
-            var dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
-            dispatcher.Invoke(() => ApplyStatus(status));
+            if (Application.Current?.Dispatcher is { } dispatcher)
+            {
+                if (dispatcher.CheckAccess())
+                {
+                    ApplyStatus(status);
+                }
+                else
+                {
+                    dispatcher.BeginInvoke(() => ApplyStatus(status));
+                }
+            }
         };
 
-        _ = InitializeAsync();
+        _ = InitializeSafeAsync();
     }
 
     public ObservableCollection<PrintJob> Jobs { get; }
@@ -232,6 +241,18 @@ public partial class MainViewModel : ObservableObject
     {
         await _settingsRepository.SetAsync(AutoStartSettingKey, AutoStartQueue);
         StatusMessage = "Settings saved.";
+    }
+
+    private async Task InitializeSafeAsync()
+    {
+        try
+        {
+            await InitializeAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Startup error: {ex.Message}";
+        }
     }
 
     private async Task InitializeAsync()

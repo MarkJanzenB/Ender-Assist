@@ -97,17 +97,17 @@
             <Border Grid.Column="1" Background="{StaticResource PanelBrush}" CornerRadius="8" Padding="16" Margin="6,0,0,0">
                 <StackPanel>
                     <TextBlock Text="Monitoring" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
-                    <TextBlock Text="{Binding CurrentJobName, StringFormat=Job: {0}}" Margin="0,0,0,8"/>
-                    <TextBlock Text="{Binding PrintStateText, StringFormat=State: {0}}" Margin="0,0,0,16"/>
-                    <TextBlock Text="{Binding HotendTemp, StringFormat=Hotend: {0:F1}°C}" FontSize="16"/>
-                    <TextBlock Text="{Binding TargetHotend, StringFormat=Target: {0:F1}°C}" Opacity="0.7" Margin="0,0,0,12"/>
-                    <TextBlock Text="{Binding BedTemp, StringFormat=Bed: {0:F1}°C}" FontSize="16"/>
-                    <TextBlock Text="{Binding TargetBed, StringFormat=Target: {0:F1}°C}" Opacity="0.7" Margin="0,0,0,16"/>
+                    <TextBlock Text="{Binding CurrentJobName, StringFormat='Job: {0}'}" Margin="0,0,0,8"/>
+                    <TextBlock Text="{Binding PrintStateText, StringFormat='State: {0}'}" Margin="0,0,0,16"/>
+                    <TextBlock Text="{Binding HotendTemp, StringFormat='Hotend: {0:F1} C'}" FontSize="16"/>
+                    <TextBlock Text="{Binding TargetHotend, StringFormat='Target: {0:F1} C'}" Opacity="0.7" Margin="0,0,0,12"/>
+                    <TextBlock Text="{Binding BedTemp, StringFormat='Bed: {0:F1} C'}" FontSize="16"/>
+                    <TextBlock Text="{Binding TargetBed, StringFormat='Target: {0:F1} C'}" Opacity="0.7" Margin="0,0,0,16"/>
                     <TextBlock Text="Progress" Margin="0,0,0,4"/>
                     <ProgressBar Value="{Binding Progress}" Height="20" Maximum="100"/>
                     <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                        <TextBlock Text="{Binding ElapsedText, StringFormat=Elapsed: {0}}" Margin="0,0,24,0"/>
-                        <TextBlock Text="{Binding EtaText, StringFormat=ETA: {0}}"/>
+                        <TextBlock Text="{Binding ElapsedText, StringFormat='Elapsed: {0}'}" Margin="0,0,24,0"/>
+                        <TextBlock Text="{Binding EtaText, StringFormat='ETA: {0}'}"/>
                     </StackPanel>
                     <CheckBox Content="Auto-start next job" IsChecked="{Binding AutoStartQueue}" Margin="0,24,0,8" Foreground="{StaticResource TextBrush}"/>
                     <Button Content="Save Settings" Command="{Binding SaveSettingsCommand}" HorizontalAlignment="Left"/>

@@ -1,3 +1,4 @@
+using MarlinPrintMiddleware.Core.Enums;
 using MarlinPrintMiddleware.Core.Models;
 
 namespace MarlinPrintMiddleware.Core.Interfaces;
@@ -7,6 +8,11 @@ namespace MarlinPrintMiddleware.Core.Interfaces;
 /// </summary>
 public interface IPrintQueueService
 {
+    /// <summary>
+    /// Current print lifecycle state.
+    /// </summary>
+    PrintState PrintState { get; }
+
     /// <summary>
     /// Adds a job to the queue.
     /// </summary>

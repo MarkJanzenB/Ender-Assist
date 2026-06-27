@@ -1,7 +1,10 @@
 using MarlinPrintMiddleware.Core.Interfaces;
+using MarlinPrintMiddleware.Monitoring;
 using MarlinPrintMiddleware.Persistence;
 using MarlinPrintMiddleware.Queue;
+using MarlinPrintMiddleware.Safety;
 using MarlinPrintMiddleware.Serial;
+using MarlinPrintMiddleware.UI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -17,7 +20,7 @@ public static class HostBootstrap
             .ConfigureLogging(logging =>
             {
                 logging.AddDebug();
-                logging.SetMinimumLevel(LogLevel.Debug);
+                logging.SetMinimumLevel(LogLevel.Information);
             })
             .Build();
     }
@@ -32,5 +35,8 @@ public static class HostBootstrap
 
         services.AddPersistence();
         services.AddPrintQueue();
+        services.AddMonitoring();
+        services.AddSafety();
+        services.AddUi();
     }
 }

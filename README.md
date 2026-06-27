@@ -8,59 +8,42 @@ Windows desktop middleware between Cura (G-code) and Marlin-based 3D printers.
 
 ## Status
 
-**Phase:** M1–M4 complete. Next: M5 Monitoring & Safety.
+**All milestones M1–M7 complete.** Ready to run as `EnderAssist.exe`.
 
 | Milestone | Status |
 |-----------|--------|
-| M1 Foundation | DONE (4/4) |
-| M2 Serial | DONE (6/6) |
-| M3 Persistence | DONE (5/5) |
-| M4 Queue | DONE (4/4) |
-| M5 Monitor & Safety | TODO |
+| M1–M4 Foundation, Serial, Persistence, Queue | DONE |
+| M5 Monitoring & Safety | DONE |
+| M6 WPF UI | DONE |
+| M7 QA & Docs | DONE |
+| M8 Hardware validation | Manual |
 
 ```text
-dotnet build && dotnet test   # 60 tests passing
+dotnet build && dotnet test   # 62 tests passing
+```
+
+## Run the App
+
+```powershell
+# Development
+dotnet run --project src/MarlinPrintMiddleware.App
+
+# Or run Debug EXE directly
+.\src\MarlinPrintMiddleware.App\bin\Debug\net8.0-windows\EnderAssist.exe
+
+# Release single-file EXE
+.\publish.ps1
+.\src\MarlinPrintMiddleware.App\bin\Release\net8.0-windows\win-x64\publish\EnderAssist.exe
 ```
 
 ## Architecture
 
 ```text
-Cura → Desktop Middleware → USB Serial → Marlin Printer
+Cura → Ender Assist (EXE) → USB Serial → Marlin Printer
 ```
-
-## Tech Stack
-
-- C# / .NET 8 / WPF / MVVM
-- SQLite / System.IO.Ports
-
-## Project Management
-
-| Directory | Purpose |
-|-----------|---------|
-| `/docs` | Architecture and standards |
-| `/tasks` | Work items (TASK-001 – TASK-035) |
-| `/progress` | Kanban state (TODO, IN_PROGRESS, BLOCKED, DONE) |
-| `/issues` | Defect tracking |
-| `/decisions` | Architecture Decision Records |
-
-## Context Recovery
-
-1. Read `/progress/*.md` for current state
-2. Read `/docs/DEPENDENCY_GRAPH.md` for available work
-3. Pick eligible TODO task and set IN_PROGRESS
-
-## Next Task
-
-**TASK-001** — Solution scaffold and project structure (Architect)
 
 ## Documentation
 
-- [Project Scope](docs/PROJECT_SCOPE.md)
+- [User Guide](docs/USER_GUIDE.md)
+- [Developer Guide](docs/DEVELOPER_GUIDE.md)
 - [Architecture](docs/ARCHITECTURE.md)
-- [Tech Stack](docs/TECH_STACK.md)
-- [Dependency Graph](docs/DEPENDENCY_GRAPH.md)
-- [Agent Assignments](docs/AGENT_ASSIGNMENTS.md)
-
-## License
-
-TBD

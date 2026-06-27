@@ -8,7 +8,7 @@ Safe pause/resume logic
 SafetyEngineer
 
 # Status
-TODO
+DONE
 
 # Priority
 HIGH
@@ -40,3 +40,4 @@ None
 
 # Progress Notes
 2026-06-27: Task created during project initialization.
+2026-06-27: PauseResumeService M125 + queue.

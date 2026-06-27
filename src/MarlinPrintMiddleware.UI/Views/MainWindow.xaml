@@ -1,0 +1,123 @@
+<Window x:Class="MarlinPrintMiddleware.UI.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:MarlinPrintMiddleware.UI.ViewModels"
+        Title="Ender Assist" Height="720" Width="1100"
+        MinHeight="600" MinWidth="900"
+        Background="#1a1a2e">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PanelBrush" Color="#16213e"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#e94560"/>
+        <SolidColorBrush x:Key="TextBrush" Color="#eaeaea"/>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Background" Value="#0f3460"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="#533483"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Padding" Value="6,4"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Connection bar -->
+        <Border Grid.Row="0" Background="{StaticResource PanelBrush}" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Port" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <ComboBox Width="120" ItemsSource="{Binding Ports}" DisplayMemberPath="PortName"
+                          SelectedItem="{Binding SelectedPort}"/>
+                <TextBlock Text="Baud" VerticalAlignment="Center" Margin="12,0,8,0"/>
+                <TextBox Width="80" Text="{Binding BaudRate}"/>
+                <Button Content="Refresh" Command="{Binding RefreshPortsCommand}"/>
+                <Button Content="Connect" Command="{Binding ConnectCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="IsEnabled" Value="True"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="Disconnect" Command="{Binding DisconnectCommand}" IsEnabled="{Binding IsConnected}"/>
+                <TextBlock Text="{Binding FirmwareInfo}" VerticalAlignment="Center" Margin="16,0,0,0" Opacity="0.8"/>
+                <TextBlock Text="{Binding ConnectionStatus}" VerticalAlignment="Center" Margin="16,0,0,0" FontWeight="Bold"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Queue -->
+            <Border Grid.Column="0" Background="{StaticResource PanelBrush}" CornerRadius="8" Padding="12" Margin="0,0,6,0">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBlock Text="Print Queue" FontSize="18" FontWeight="SemiBold"/>
+                        <Button Content="Add G-code" Command="{Binding AddGCodeCommand}" Margin="16,0,0,0"/>
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding Jobs}" AutoGenerateColumns="False" IsReadOnly="True"
+                              HeadersVisibility="Column" Background="#0f3460" Foreground="{StaticResource TextBrush}"
+                              RowBackground="#16213e" AlternatingRowBackground="#1a1a2e" BorderThickness="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80"/>
+                            <DataGridTextColumn Header="%" Binding="{Binding Progress, StringFormat=F0}" Width="50"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,12,0,0">
+                        <Button Content="Start" Command="{Binding StartPrintCommand}"/>
+                        <Button Content="Pause" Command="{Binding PausePrintCommand}"/>
+                        <Button Content="Resume" Command="{Binding ResumePrintCommand}"/>
+                        <Button Content="Cancel" Command="{Binding CancelPrintCommand}"/>
+                        <Button Content="E-STOP" Command="{Binding EmergencyStopCommand}"
+                                Background="{StaticResource AccentBrush}" FontWeight="Bold"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Monitoring -->
+            <Border Grid.Column="1" Background="{StaticResource PanelBrush}" CornerRadius="8" Padding="16" Margin="6,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="Monitoring" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                    <TextBlock Text="{Binding CurrentJobName, StringFormat=Job: {0}}" Margin="0,0,0,8"/>
+                    <TextBlock Text="{Binding PrintStateText, StringFormat=State: {0}}" Margin="0,0,0,16"/>
+                    <TextBlock Text="{Binding HotendTemp, StringFormat=Hotend: {0:F1}°C}" FontSize="16"/>
+                    <TextBlock Text="{Binding TargetHotend, StringFormat=Target: {0:F1}°C}" Opacity="0.7" Margin="0,0,0,12"/>
+                    <TextBlock Text="{Binding BedTemp, StringFormat=Bed: {0:F1}°C}" FontSize="16"/>
+                    <TextBlock Text="{Binding TargetBed, StringFormat=Target: {0:F1}°C}" Opacity="0.7" Margin="0,0,0,16"/>
+                    <TextBlock Text="Progress" Margin="0,0,0,4"/>
+                    <ProgressBar Value="{Binding Progress}" Height="20" Maximum="100"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="{Binding ElapsedText, StringFormat=Elapsed: {0}}" Margin="0,0,24,0"/>
+                        <TextBlock Text="{Binding EtaText, StringFormat=ETA: {0}}"/>
+                    </StackPanel>
+                    <CheckBox Content="Auto-start next job" IsChecked="{Binding AutoStartQueue}" Margin="0,24,0,8" Foreground="{StaticResource TextBrush}"/>
+                    <Button Content="Save Settings" Command="{Binding SaveSettingsCommand}" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Status bar -->
+        <Border Grid.Row="2" Background="#0f3460" CornerRadius="6" Padding="10,6" Margin="0,12,0,0">
+            <TextBlock Text="{Binding StatusMessage}"/>
+        </Border>
+    </Grid>
+</Window>

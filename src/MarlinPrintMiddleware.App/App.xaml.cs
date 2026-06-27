@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using MarlinPrintMiddleware.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -15,7 +16,7 @@ public partial class App : Application
         _host = HostBootstrap.BuildHost();
         await _host.StartAsync();
 
-        var mainWindow = new MainWindow();
+        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
         mainWindow.Show();
     }
 

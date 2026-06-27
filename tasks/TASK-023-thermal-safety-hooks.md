@@ -8,7 +8,7 @@ Thermal runaway detection hooks
 SafetyEngineer
 
 # Status
-TODO
+DONE
 
 # Priority
 MEDIUM
@@ -39,3 +39,4 @@ None
 
 # Progress Notes
 2026-06-27: Task created during project initialization.
+2026-06-27: ThermalSafetyService drop detection.

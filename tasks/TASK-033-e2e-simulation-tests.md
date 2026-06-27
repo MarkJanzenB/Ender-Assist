@@ -8,7 +8,7 @@ End-to-end print simulation tests
 TestEngineer
 
 # Status
-TODO
+DONE
 
 # Priority
 HIGH
@@ -38,3 +38,4 @@ None
 
 # Progress Notes
 2026-06-27: Task created during project initialization.
+2026-06-27: Queue + integration DI tests.

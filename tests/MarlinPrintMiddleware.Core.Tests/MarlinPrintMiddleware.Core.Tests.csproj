@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\MarlinPrintMiddleware.Core\MarlinPrintMiddleware.Core.csproj" />
+    <ProjectReference Include="..\..\src\MarlinPrintMiddleware.Monitoring\MarlinPrintMiddleware.Monitoring.csproj" />
   </ItemGroup>
 
 </Project>

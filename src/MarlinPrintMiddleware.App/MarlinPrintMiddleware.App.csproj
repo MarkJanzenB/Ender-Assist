@@ -5,6 +5,8 @@
     <ProjectReference Include="..\MarlinPrintMiddleware.Persistence\MarlinPrintMiddleware.Persistence.csproj" />
     <ProjectReference Include="..\MarlinPrintMiddleware.Queue\MarlinPrintMiddleware.Queue.csproj" />
     <ProjectReference Include="..\MarlinPrintMiddleware.Serial\MarlinPrintMiddleware.Serial.csproj" />
+    <ProjectReference Include="..\MarlinPrintMiddleware.Monitoring\MarlinPrintMiddleware.Monitoring.csproj" />
+    <ProjectReference Include="..\MarlinPrintMiddleware.Safety\MarlinPrintMiddleware.Safety.csproj" />
     <ProjectReference Include="..\MarlinPrintMiddleware.UI\MarlinPrintMiddleware.UI.csproj" />
   </ItemGroup>
 
@@ -27,6 +29,18 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon />
+    <AssemblyName>EnderAssist</AssemblyName>
+    <RootNamespace>MarlinPrintMiddleware.App</RootNamespace>
+    <Product>Ender Assist</Product>
+    <Description>Windows desktop middleware between Cura and Marlin 3D printers</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
 </Project>

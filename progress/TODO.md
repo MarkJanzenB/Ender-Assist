@@ -1,23 +1,24 @@
 # TODO
 
-M1 and M2 complete. Next milestone: **M3 Persistence**.
+M1–M4 complete. Next milestone: **M5 Monitoring & Safety**.
 
-## Next Up (M3)
+## Next Up (M5)
 
 | ID | Title | Owner | Priority | Blocked By |
 |----|-------|-------|----------|------------|
-| TASK-010 | SQLite schema design | DatabaseEngineer | HIGH | — (TASK-001 DONE) |
-| TASK-011 | Database migrations | DatabaseEngineer | HIGH | TASK-010 |
-| TASK-012 | Print job repository | PersistenceEngineer | HIGH | TASK-011 |
-| TASK-013 | Printer profile repository | PersistenceEngineer | MEDIUM | TASK-011 |
-| TASK-014 | Settings persistence | PersistenceEngineer | MEDIUM | TASK-011 |
+| TASK-019 | Temperature polling | MonitoringEngineer | HIGH | — (TASK-007 DONE) |
+| TASK-020 | Position/progress tracking | MonitoringEngineer | MEDIUM | TASK-019 |
+| TASK-021 | Printer status aggregation | MonitoringEngineer | HIGH | TASK-019, 020 |
+| TASK-022 | Emergency stop handler | SafetyEngineer | CRITICAL | TASK-008, 017 DONE |
+| TASK-023 | Thermal safety hooks | SafetyEngineer | MEDIUM | TASK-019 |
+| TASK-024 | Pause/resume logic | SafetyEngineer | HIGH | TASK-017 DONE |
 
-## Deferred (M4+)
+## Deferred (M6+)
 
-TASK-015 through TASK-035
+TASK-025 through TASK-035
 
 ## Summary
 
-- **DONE (Team-4):** 10 tasks
-- **TODO (M3):** 5 tasks eligible to start (TASK-010 now)
+- **DONE:** 19 tasks (M1–M4)
+- **TODO (M5):** 6 tasks (TASK-019, 022 eligible now)
 - **Last updated:** 2026-06-27

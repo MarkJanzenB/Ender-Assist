@@ -8,7 +8,7 @@ Job scheduling and prioritization
 QueueEngineer
 
 # Status
-TODO
+DONE
 
 # Priority
 HIGH
@@ -39,3 +39,4 @@ None
 
 # Progress Notes
 2026-06-27: Task created during project initialization.
+2026-06-27: Auto-start via queue.auto_start setting.

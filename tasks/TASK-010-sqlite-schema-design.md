@@ -8,7 +8,7 @@ SQLite schema design
 DatabaseEngineer
 
 # Status
-TODO
+DONE
 
 # Priority
 HIGH
@@ -39,3 +39,4 @@ None
 
 # Progress Notes
 2026-06-27: Task created during project initialization.
+2026-06-27: Schema in Migrations/001_initial.sql with indexes and Ender 3 V2 seed.

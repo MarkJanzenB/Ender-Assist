@@ -8,7 +8,7 @@ Print job repository
 PersistenceEngineer
 
 # Status
-TODO
+DONE
 
 # Priority
 HIGH
@@ -40,3 +40,4 @@ None
 
 # Progress Notes
 2026-06-27: Task created during project initialization.
+2026-06-27: PrintJobRepository with parameterized SQL, 3 tests.

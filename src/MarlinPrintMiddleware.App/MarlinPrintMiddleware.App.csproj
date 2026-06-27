@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MarlinPrintMiddleware.Core\MarlinPrintMiddleware.Core.csproj" />
+    <ProjectReference Include="..\MarlinPrintMiddleware.Persistence\MarlinPrintMiddleware.Persistence.csproj" />
+    <ProjectReference Include="..\MarlinPrintMiddleware.Queue\MarlinPrintMiddleware.Queue.csproj" />
     <ProjectReference Include="..\MarlinPrintMiddleware.Serial\MarlinPrintMiddleware.Serial.csproj" />
     <ProjectReference Include="..\MarlinPrintMiddleware.UI\MarlinPrintMiddleware.UI.csproj" />
   </ItemGroup>
@@ -10,6 +12,13 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\MarlinPrintMiddleware.Persistence\Migrations\001_initial.sql">
+      <Link>Migrations\001_initial.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <PropertyGroup>

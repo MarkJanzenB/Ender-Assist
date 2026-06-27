@@ -24,6 +24,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\MarlinPrintMiddleware.Queue\MarlinPrintMiddleware.Queue.csproj" />
+    <ProjectReference Include="..\..\src\MarlinPrintMiddleware.Persistence\MarlinPrintMiddleware.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\src\MarlinPrintMiddleware.Persistence\Migrations\001_initial.sql">
+      <Link>Migrations\001_initial.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SampleGCode\sample.gcode">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

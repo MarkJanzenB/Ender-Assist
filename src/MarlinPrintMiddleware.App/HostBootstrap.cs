@@ -1,4 +1,6 @@
 using MarlinPrintMiddleware.Core.Interfaces;
+using MarlinPrintMiddleware.Persistence;
+using MarlinPrintMiddleware.Queue;
 using MarlinPrintMiddleware.Serial;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,9 +30,7 @@ public static class HostBootstrap
         services.AddSingleton<ISerialEngine, SerialEngine>();
         services.AddHostedService(sp => (SerialEngine)sp.GetRequiredService<ISerialEngine>());
 
-        services.AddSingleton<IPrintQueueService, StubPrintQueueService>();
-        services.AddSingleton<IPrintJobRepository, StubPrintJobRepository>();
-        services.AddSingleton<IPrinterProfileRepository, StubPrinterProfileRepository>();
-        services.AddSingleton<ISettingsRepository, StubSettingsRepository>();
+        services.AddPersistence();
+        services.AddPrintQueue();
     }
 }

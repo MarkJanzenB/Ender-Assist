@@ -4,4 +4,4 @@ No tasks currently in progress.
 
 ## Last Updated
 
-2026-06-27 — Team-4 sprint complete (M1 + M2). Next: M3 Persistence (TASK-010).
+2026-06-27 — M3/M4 sprint complete. Next: M5 Monitoring & Safety.

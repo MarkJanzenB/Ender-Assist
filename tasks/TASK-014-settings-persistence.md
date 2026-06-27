@@ -8,7 +8,7 @@ Application settings persistence
 PersistenceEngineer
 
 # Status
-TODO
+DONE
 
 # Priority
 MEDIUM
@@ -38,3 +38,4 @@ None
 
 # Progress Notes
 2026-06-27: Task created during project initialization.
+2026-06-27: SettingsRepository JSON key-value, 2 tests.

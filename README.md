@@ -8,16 +8,18 @@ Windows desktop middleware between Cura (G-code) and Marlin-based 3D printers.
 
 ## Status
 
-**Phase:** M1 + M2 complete (Team-4 sprint). Next: M3 Persistence.
+**Phase:** M1–M4 complete. Next: M5 Monitoring & Safety.
 
 | Milestone | Status |
 |-----------|--------|
 | M1 Foundation | DONE (4/4) |
 | M2 Serial | DONE (6/6) |
-| M3 Persistence | TODO |
+| M3 Persistence | DONE (5/5) |
+| M4 Queue | DONE (4/4) |
+| M5 Monitor & Safety | TODO |
 
 ```text
-dotnet build && dotnet test   # 43 tests passing
+dotnet build && dotnet test   # 60 tests passing
 ```
 
 ## Architecture

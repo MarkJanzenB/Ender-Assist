@@ -8,7 +8,7 @@ Printer profile repository
 PersistenceEngineer
 
 # Status
-TODO
+DONE
 
 # Priority
 MEDIUM
@@ -39,3 +39,4 @@ None
 
 # Progress Notes
 2026-06-27: Task created during project initialization.
+2026-06-27: PrinterProfileRepository with default demotion, 2 tests.

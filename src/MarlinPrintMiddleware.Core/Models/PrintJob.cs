@@ -26,6 +26,8 @@ public class PrintJob
 
     public int LastLineSent { get; set; }
 
+    public int QueueOrder { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     public DateTimeOffset? StartedAt { get; set; }

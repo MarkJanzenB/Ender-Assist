@@ -1,0 +1,21 @@
+# Issues
+
+This directory tracks defects and blockers discovered during implementation.
+
+## Format
+
+`ISSUE-NNN-kebab-slug.md` using the template in the project orchestrator spec.
+
+## Status Values
+
+OPEN | IN_PROGRESS | RESOLVED | CLOSED
+
+## Rules
+
+- Issue IDs are permanent — never delete issue files
+- Every defect gets an issue before resolution
+- Link issues from task files under `# Related Issues`
+
+## Open Issues
+
+None at project initialization.

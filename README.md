@@ -1,6 +1,8 @@
-# MarlinPrintMiddleware
+# Ender Assist
 
 Windows desktop middleware between Cura (G-code) and Marlin-based 3D printers.
+
+**GitHub:** [MarkJanzenB/Ender-Assist](https://github.com/MarkJanzenB/Ender-Assist)
 
 **Primary target:** Creality Ender 3 V2 (4.2.2 board)
 

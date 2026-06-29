@@ -10,6 +10,12 @@ public interface IDatabaseMigrator
 
 public sealed class DatabaseMigrator : IDatabaseMigrator
 {
+    private static readonly (int Version, string FileName)[] Migrations =
+    [
+        (1, "001_initial.sql"),
+        (2, "002_job_metadata.sql")
+    ];
+
     private readonly ISqliteConnectionFactory _connectionFactory;
     private readonly ILogger<DatabaseMigrator> _logger;
 
@@ -24,24 +30,27 @@ public sealed class DatabaseMigrator : IDatabaseMigrator
         await using var connection = _connectionFactory.CreateConnection();
 
         var currentVersion = await GetCurrentVersionAsync(connection, cancellationToken).ConfigureAwait(false);
-        if (currentVersion >= 1)
+        foreach (var (version, fileName) in Migrations)
         {
-            _logger.LogDebug("Database already at version {Version}", currentVersion);
-            return;
+            if (currentVersion >= version)
+            {
+                continue;
+            }
+
+            var sqlPath = Path.Combine(AppContext.BaseDirectory, "Migrations", fileName);
+            if (!File.Exists(sqlPath))
+            {
+                throw new InvalidOperationException($"Migration script not found: {sqlPath}");
+            }
+
+            var script = await File.ReadAllTextAsync(sqlPath, cancellationToken).ConfigureAwait(false);
+            await using var command = connection.CreateCommand();
+            command.CommandText = script;
+            await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+
+            _logger.LogInformation("Applied database migration to version {Version}", version);
+            currentVersion = version;
         }
-
-        var sqlPath = Path.Combine(AppContext.BaseDirectory, "Migrations", "001_initial.sql");
-        if (!File.Exists(sqlPath))
-        {
-            throw new InvalidOperationException($"Migration script not found: {sqlPath}");
-        }
-
-        var script = await File.ReadAllTextAsync(sqlPath, cancellationToken).ConfigureAwait(false);
-        await using var command = connection.CreateCommand();
-        command.CommandText = script;
-        await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
-
-        _logger.LogInformation("Applied database migration to version 1");
     }
 
     private static async Task<int> GetCurrentVersionAsync(SqliteConnection connection, CancellationToken cancellationToken)

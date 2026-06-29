@@ -35,4 +35,10 @@ public class PrintJob
     public DateTimeOffset? CompletedAt { get; set; }
 
     public string? ErrorMessage { get; set; }
+
+    public int? EstimatedDurationSeconds { get; set; }
+
+    public double? FilamentGrams { get; set; }
+
+    public int? TotalLayers { get; set; }
 }

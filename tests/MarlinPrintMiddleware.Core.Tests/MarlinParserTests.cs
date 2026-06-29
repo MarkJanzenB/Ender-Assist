@@ -19,6 +19,14 @@ public class MarlinParserTests
     }
 
     [Fact]
+    public void TemperatureParser_ParsesFanSpeed()
+    {
+        var ok = MarlinTemperatureParser.TryParseFanSpeed("ok T:25 /0 B:25 /0 @:128", out var fan);
+        ok.Should().BeTrue();
+        fan.Should().BeApproximately(128, 0.01);
+    }
+
+    [Fact]
     public void PositionParser_ParsesM114()
     {
         var ok = MarlinPositionParser.TryParse(

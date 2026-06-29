@@ -29,4 +29,24 @@ public class PrinterStatus
     public TimeSpan Elapsed { get; set; }
 
     public TimeSpan? Eta { get; set; }
+
+    public bool HasLiveTemperature { get; set; }
+
+    public double? PositionX { get; set; }
+
+    public double? PositionY { get; set; }
+
+    public double? PositionZ { get; set; }
+
+    public double? PositionE { get; set; }
+
+    public bool HasLivePosition { get; set; }
+
+    public double? FanSpeedPercent { get; set; }
+
+    public bool HasLiveFan { get; set; }
+
+    public int? CurrentLayer { get; set; }
+
+    public int? TotalLayers { get; set; }
 }

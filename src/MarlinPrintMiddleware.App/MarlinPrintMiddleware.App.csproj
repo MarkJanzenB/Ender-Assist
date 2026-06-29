@@ -21,6 +21,10 @@
       <Link>Migrations\001_initial.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\MarlinPrintMiddleware.Persistence\Migrations\002_job_metadata.sql">
+      <Link>Migrations\002_job_metadata.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <PropertyGroup>

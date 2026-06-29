@@ -1,0 +1,33 @@
+<UserControl x:Class="MarlinPrintMiddleware.UI.Views.Controls.ControlPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Style="{StaticResource ModernCard}">
+        <StackPanel>
+            <TextBlock Text="Printer Control" Style="{StaticResource SectionTitle}"/>
+            <TextBlock Text="{Binding PositionDisplay}" FontFamily="Cascadia Mono, Consolas, Segoe UI"
+                       Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,12"/>
+
+            <WrapPanel Margin="0,0,0,8">
+                <Button Content="Home (G28)" Style="{StaticResource PrimaryButton}" Command="{Binding HomeAllCommand}"/>
+                <Button Content="Disable motors" Command="{Binding DisableMotorsCommand}"/>
+            </WrapPanel>
+
+            <TextBlock Text="PREHEAT" Style="{StaticResource FieldLabel}"/>
+            <WrapPanel Margin="0,0,0,12">
+                <Button Content="PLA" Command="{Binding PreheatPlaCommand}"/>
+                <Button Content="PETG" Command="{Binding PreheatPetgCommand}"/>
+                <Button Content="Cooldown" Command="{Binding CooldownCommand}"/>
+            </WrapPanel>
+
+            <TextBlock Text="JOG (10 mm)" Style="{StaticResource FieldLabel}"/>
+            <WrapPanel>
+                <Button Content="X−" Command="{Binding JogXMinusCommand}"/>
+                <Button Content="X+" Command="{Binding JogXPlusCommand}"/>
+                <Button Content="Y−" Command="{Binding JogYMinusCommand}"/>
+                <Button Content="Y+" Command="{Binding JogYPlusCommand}"/>
+                <Button Content="Z−" Command="{Binding JogZMinusCommand}"/>
+                <Button Content="Z+" Command="{Binding JogZPlusCommand}"/>
+            </WrapPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

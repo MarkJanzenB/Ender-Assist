@@ -55,10 +55,12 @@ public sealed class PrintJobRepository : IPrintJobRepository
         command.CommandText = """
             INSERT INTO print_jobs (
                 file_path, name, status, priority, progress, total_lines, last_line_sent,
-                queue_order, created_at, started_at, completed_at, error_message)
+                queue_order, created_at, started_at, completed_at, error_message,
+                estimated_duration_seconds, filament_grams, total_layers)
             VALUES (
                 $file_path, $name, $status, $priority, $progress, $total_lines, $last_line_sent,
-                $queue_order, $created_at, $started_at, $completed_at, $error_message);
+                $queue_order, $created_at, $started_at, $completed_at, $error_message,
+                $estimated_duration_seconds, $filament_grams, $total_layers);
             SELECT last_insert_rowid();
             """;
 
@@ -85,7 +87,10 @@ public sealed class PrintJobRepository : IPrintJobRepository
                 created_at = $created_at,
                 started_at = $started_at,
                 completed_at = $completed_at,
-                error_message = $error_message
+                error_message = $error_message,
+                estimated_duration_seconds = $estimated_duration_seconds,
+                filament_grams = $filament_grams,
+                total_layers = $total_layers
             WHERE id = $id
             """;
 
@@ -136,8 +141,23 @@ public sealed class PrintJobRepository : IPrintJobRepository
         CompletedAt = ReadNullableDateTimeOffset(reader, "completed_at"),
         ErrorMessage = reader.IsDBNull(reader.GetOrdinal("error_message"))
             ? null
-            : reader.GetString(reader.GetOrdinal("error_message"))
+            : reader.GetString(reader.GetOrdinal("error_message")),
+        EstimatedDurationSeconds = ReadNullableInt(reader, "estimated_duration_seconds"),
+        FilamentGrams = ReadNullableDouble(reader, "filament_grams"),
+        TotalLayers = ReadNullableInt(reader, "total_layers")
     };
+
+    private static int? ReadNullableInt(SqliteDataReader reader, string column)
+    {
+        var ordinal = reader.GetOrdinal(column);
+        return reader.IsDBNull(ordinal) ? null : reader.GetInt32(ordinal);
+    }
+
+    private static double? ReadNullableDouble(SqliteDataReader reader, string column)
+    {
+        var ordinal = reader.GetOrdinal(column);
+        return reader.IsDBNull(ordinal) ? null : reader.GetDouble(ordinal);
+    }
 
     private static DateTimeOffset? ReadNullableDateTimeOffset(SqliteDataReader reader, string column)
     {
@@ -159,5 +179,8 @@ public sealed class PrintJobRepository : IPrintJobRepository
         command.Parameters.AddWithValue("$started_at", job.StartedAt?.ToString("O") ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("$completed_at", job.CompletedAt?.ToString("O") ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("$error_message", job.ErrorMessage ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$estimated_duration_seconds", job.EstimatedDurationSeconds ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$filament_grams", job.FilamentGrams ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$total_layers", job.TotalLayers ?? (object)DBNull.Value);
     }
 }

@@ -32,17 +32,27 @@ public sealed class GCodeParser
 
         var totalLines = 0;
         var printableLines = 0;
+        var layerMarkers = 0;
         string? slicerName = null;
         TimeSpan? estimatedDuration = null;
+        double? filamentGrams = null;
+        int? totalLayers = null;
 
         await foreach (var line in ReadRawLinesAsync(filePath, cancellationToken).ConfigureAwait(false))
         {
             totalLines++;
 
-            if (totalLines <= 50)
+            if (totalLines <= 80)
             {
                 slicerName ??= TryParseSlicer(line);
                 estimatedDuration ??= TryParseEstimatedDuration(line);
+                totalLayers ??= TryParseLayerCount(line);
+                filamentGrams ??= TryParseFilamentGrams(line);
+            }
+
+            if (line.StartsWith(";LAYER:", StringComparison.OrdinalIgnoreCase))
+            {
+                layerMarkers++;
             }
 
             if (!IsSkippableLine(line))
@@ -51,6 +61,8 @@ public sealed class GCodeParser
             }
         }
 
+        totalLayers ??= layerMarkers > 0 ? layerMarkers : null;
+
         return new GCodeFileInfo
         {
             FilePath = filePath,
@@ -58,7 +70,9 @@ public sealed class GCodeParser
             TotalLines = totalLines,
             PrintableLines = printableLines,
             SlicerName = slicerName,
-            EstimatedDuration = estimatedDuration
+            EstimatedDuration = estimatedDuration,
+            TotalLayers = totalLayers,
+            FilamentGrams = filamentGrams
         };
     }
 
@@ -140,6 +154,41 @@ public sealed class GCodeParser
         if (int.TryParse(line[prefix.Length..].Trim(), out var seconds))
         {
             return TimeSpan.FromSeconds(seconds);
+        }
+
+        return null;
+    }
+
+    private static int? TryParseLayerCount(string line)
+    {
+        const string prefix = ";LAYER_COUNT:";
+        if (!line.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        return int.TryParse(line[prefix.Length..].Trim(), out var count) ? count : null;
+    }
+
+    private static double? TryParseFilamentGrams(string line)
+    {
+        if (line.StartsWith(";Filament used:", StringComparison.OrdinalIgnoreCase))
+        {
+            var value = line[";Filament used:".Length..].Trim();
+            if (value.EndsWith("g", StringComparison.OrdinalIgnoreCase)
+                && double.TryParse(value[..^1].Trim(), out var grams))
+            {
+                return grams;
+            }
+        }
+
+        if (line.StartsWith(";FILAMENT_USED:", StringComparison.OrdinalIgnoreCase))
+        {
+            var value = line[";FILAMENT_USED:".Length..].Trim();
+            if (double.TryParse(value, out var grams))
+            {
+                return grams;
+            }
         }
 
         return null;

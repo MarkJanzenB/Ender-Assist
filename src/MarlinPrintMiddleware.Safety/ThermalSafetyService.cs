@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MarlinPrintMiddleware.Safety;
 
-public sealed class ThermalSafetyService : BackgroundService
+public sealed class ThermalSafetyService : BackgroundService, IThermalWarningService
 {
     private readonly TemperatureMonitorService _temperatureMonitor;
     private readonly IPrintQueueService _queueService;

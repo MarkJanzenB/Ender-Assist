@@ -11,6 +11,9 @@ public static partial class MarlinTemperatureParser
     [GeneratedRegex(@"B:([\d.]+)(?:\s*/([\d.]+))?", RegexOptions.IgnoreCase)]
     private static partial Regex BedRegex();
 
+    [GeneratedRegex(@"@:(\d+)", RegexOptions.IgnoreCase)]
+    private static partial Regex FanRegex();
+
     public static bool TryParse(string response, out double hotend, out double targetHotend, out double bed, out double targetBed)
     {
         hotend = targetHotend = bed = targetBed = 0;
@@ -37,11 +40,24 @@ public static partial class MarlinTemperatureParser
 
         return true;
     }
+
+    public static bool TryParseFanSpeed(string response, out double fanPercent)
+    {
+        fanPercent = 0;
+        var match = FanRegex().Match(response);
+        if (!match.Success || !double.TryParse(match.Groups[1].Value, out var raw))
+        {
+            return false;
+        }
+
+        fanPercent = raw <= 1 ? raw * 100 : raw;
+        return true;
+    }
 }
 
 public static partial class MarlinPositionParser
 {
-    [GeneratedRegex(@"X:([\d.-]+)\s+Y:([\d.-]+)\s+Z:([\d.-]+)", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"X:([\d.-]+)\s+Y:([\d.-]+)\s+Z:([\d.-]+)(?:\s+E:([\d.-]+))?", RegexOptions.IgnoreCase)]
     private static partial Regex PositionRegex();
 
     public static bool TryParse(string response, out double x, out double y, out double z)
@@ -56,5 +72,22 @@ public static partial class MarlinPositionParser
         return double.TryParse(match.Groups[1].Value, out x)
             && double.TryParse(match.Groups[2].Value, out y)
             && double.TryParse(match.Groups[3].Value, out z);
+    }
+
+    public static bool TryParse(string response, out double x, out double y, out double z, out double e)
+    {
+        e = 0;
+        if (!TryParse(response, out x, out y, out z))
+        {
+            return false;
+        }
+
+        var match = PositionRegex().Match(response);
+        if (match.Groups[4].Success)
+        {
+            double.TryParse(match.Groups[4].Value, out e);
+        }
+
+        return true;
     }
 }

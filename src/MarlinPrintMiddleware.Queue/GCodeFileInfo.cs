@@ -16,4 +16,8 @@ public sealed class GCodeFileInfo
     public string? SlicerName { get; init; }
 
     public TimeSpan? EstimatedDuration { get; init; }
+
+    public int? TotalLayers { get; init; }
+
+    public double? FilamentGrams { get; init; }
 }

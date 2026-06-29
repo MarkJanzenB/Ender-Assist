@@ -52,6 +52,11 @@ public sealed class PrintQueueService : IPrintQueueService
             job.TotalLines = info.PrintableLines;
             job.LastLineSent = 0;
             job.CreatedAt = DateTimeOffset.UtcNow;
+            job.EstimatedDurationSeconds = info.EstimatedDuration is { } duration
+                ? (int)duration.TotalSeconds
+                : null;
+            job.FilamentGrams = info.FilamentGrams;
+            job.TotalLayers = info.TotalLayers;
 
             var pending = await _jobRepository.GetPendingAsync(cancellationToken).ConfigureAwait(false);
             job.QueueOrder = pending.Count;
@@ -176,6 +181,155 @@ public sealed class PrintQueueService : IPrintQueueService
             Jobs = jobs,
             CurrentJobId = _currentJob?.Id
         };
+    }
+
+    public async Task StartJobAsync(long jobId, CancellationToken cancellationToken = default)
+    {
+        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            if (_serialEngine.State != ConnectionState.Connected)
+            {
+                throw new PrintQueueException("Cannot start print: printer is not connected.");
+            }
+
+            if (_stateMachine.State is PrintState.Printing or PrintState.Preparing or PrintState.Paused)
+            {
+                throw new PrintQueueException("A print is already active.");
+            }
+
+            var job = await _jobRepository.GetByIdAsync(jobId, cancellationToken).ConfigureAwait(false);
+            if (job is null || job.Status != JobStatus.Pending)
+            {
+                throw new PrintQueueException("Selected job is not available to start.");
+            }
+
+            _currentJob = job;
+            _printCts = new CancellationTokenSource();
+            _ = Task.Run(() => RunPrintAsync(job, _printCts.Token), CancellationToken.None);
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    public async Task RemoveJobAsync(long jobId, CancellationToken cancellationToken = default)
+    {
+        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var job = await _jobRepository.GetByIdAsync(jobId, cancellationToken).ConfigureAwait(false);
+            if (job is null)
+            {
+                return;
+            }
+
+            if (job.Status != JobStatus.Pending)
+            {
+                throw new PrintQueueException("Only pending jobs can be removed.");
+            }
+
+            if (_currentJob?.Id == jobId)
+            {
+                throw new PrintQueueException("Cannot remove the active job.");
+            }
+
+            await _jobRepository.DeleteAsync(jobId, cancellationToken).ConfigureAwait(false);
+            _logger.LogInformation("Removed job {JobId} from queue", jobId);
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    public async Task ClearCompletedAsync(CancellationToken cancellationToken = default)
+    {
+        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var jobs = await _jobRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
+            foreach (var job in jobs.Where(j => j.Status is JobStatus.Completed or JobStatus.Cancelled))
+            {
+                await _jobRepository.DeleteAsync(job.Id, cancellationToken).ConfigureAwait(false);
+            }
+
+            _logger.LogInformation("Cleared completed and cancelled jobs from queue");
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    public async Task RetryFailedJobAsync(long jobId, CancellationToken cancellationToken = default)
+    {
+        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var job = await _jobRepository.GetByIdAsync(jobId, cancellationToken).ConfigureAwait(false);
+            if (job is null || job.Status != JobStatus.Failed)
+            {
+                throw new PrintQueueException("Only failed jobs can be retried.");
+            }
+
+            job.Status = JobStatus.Pending;
+            job.Progress = 0;
+            job.LastLineSent = 0;
+            job.ErrorMessage = null;
+            job.CompletedAt = null;
+            job.StartedAt = null;
+
+            var pending = await _jobRepository.GetPendingAsync(cancellationToken).ConfigureAwait(false);
+            job.QueueOrder = pending.Count;
+
+            await _jobRepository.UpdateAsync(job, cancellationToken).ConfigureAwait(false);
+            _logger.LogInformation("Job {JobId} reset to pending for retry", jobId);
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    public async Task ReorderJobAsync(long jobId, int newIndex, CancellationToken cancellationToken = default)
+    {
+        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var pending = (await _jobRepository.GetPendingAsync(cancellationToken).ConfigureAwait(false))
+                .OrderBy(j => j.QueueOrder)
+                .ToList();
+
+            var job = pending.FirstOrDefault(j => j.Id == jobId);
+            if (job is null)
+            {
+                throw new PrintQueueException("Only pending jobs can be reordered.");
+            }
+
+            newIndex = Math.Clamp(newIndex, 0, pending.Count - 1);
+            var currentIndex = pending.IndexOf(job);
+            if (currentIndex == newIndex)
+            {
+                return;
+            }
+
+            pending.RemoveAt(currentIndex);
+            pending.Insert(newIndex, job);
+
+            for (var i = 0; i < pending.Count; i++)
+            {
+                pending[i].QueueOrder = i;
+                await _jobRepository.UpdateAsync(pending[i], cancellationToken).ConfigureAwait(false);
+            }
+
+            _logger.LogInformation("Reordered job {JobId} to index {Index}", jobId, newIndex);
+        }
+        finally
+        {
+            _gate.Release();
+        }
     }
 
     public async Task ReloadFromPersistenceAsync(CancellationToken cancellationToken = default)

@@ -16,6 +16,9 @@ public sealed class TemperatureMonitorService : BackgroundService
     private double _targetHotend;
     private double _bed;
     private double _targetBed;
+    private double? _fanPercent;
+    private bool _hasReading;
+    private bool _hasFanReading;
 
     public TemperatureMonitorService(
         ISerialEngine serialEngine,
@@ -25,7 +28,27 @@ public sealed class TemperatureMonitorService : BackgroundService
         _serialEngine = serialEngine;
         _options = options;
         _logger = logger;
+
+        _serialEngine.ConnectionStateChanged += (_, args) =>
+        {
+            if (args.CurrentState != ConnectionState.Connected)
+            {
+                _hasReading = false;
+                _hotend = 0;
+                _targetHotend = 0;
+                _bed = 0;
+                _targetBed = 0;
+                _fanPercent = null;
+                _hasFanReading = false;
+            }
+        };
     }
+
+    public bool HasReading => _hasReading;
+
+    public bool HasFanReading => _hasFanReading;
+
+    public double? FanSpeedPercent => _fanPercent;
 
     public double HotendTemp => _hotend;
 
@@ -48,10 +71,17 @@ public sealed class TemperatureMonitorService : BackgroundService
                     var response = await _serialEngine.SendCommandAsync("M105", stoppingToken).ConfigureAwait(false);
                     if (MarlinTemperatureParser.TryParse(response, out var hotend, out var targetHotend, out var bed, out var targetBed))
                     {
+                        _hasReading = true;
                         _hotend = hotend;
                         _targetHotend = targetHotend;
                         _bed = bed;
                         _targetBed = targetBed;
+                        if (MarlinTemperatureParser.TryParseFanSpeed(response, out var fan))
+                        {
+                            _fanPercent = fan;
+                            _hasFanReading = true;
+                        }
+
                         TemperatureUpdated?.Invoke(this, EventArgs.Empty);
                     }
                 }

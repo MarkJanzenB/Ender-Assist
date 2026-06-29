@@ -45,6 +45,31 @@ public interface IPrintQueueService
     Task CancelAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Starts a specific pending job by identifier.
+    /// </summary>
+    Task StartJobAsync(long jobId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes a pending job from the queue.
+    /// </summary>
+    Task RemoveJobAsync(long jobId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes all completed and cancelled jobs from persistence.
+    /// </summary>
+    Task ClearCompletedAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Resets a failed job back to pending for retry.
+    /// </summary>
+    Task RetryFailedJobAsync(long jobId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Reorders a pending job to a new queue index (0-based).
+    /// </summary>
+    Task ReorderJobAsync(long jobId, int newIndex, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Returns a point-in-time snapshot of the queue.
     /// </summary>
     PrintQueueSnapshot GetSnapshot();

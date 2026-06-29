@@ -15,6 +15,7 @@ public static class PersistenceServiceExtensions
         services.AddSingleton<IPrintJobRepository, Repositories.PrintJobRepository>();
         services.AddSingleton<IPrinterProfileRepository, Repositories.PrinterProfileRepository>();
         services.AddSingleton<ISettingsRepository, Repositories.SettingsRepository>();
+        services.AddSingleton<IMacroRepository, Repositories.MacroRepository>();
         services.AddHostedService<DatabaseInitializer>();
         return services;
     }

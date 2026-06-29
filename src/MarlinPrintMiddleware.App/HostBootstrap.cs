@@ -32,6 +32,7 @@ public static class HostBootstrap
         services.AddSingleton<ISerialPortDiscovery, SerialPortDiscovery>();
         services.AddSingleton<ISerialEngine, SerialEngine>();
         services.AddHostedService(sp => (SerialEngine)sp.GetRequiredService<ISerialEngine>());
+        services.AddSerialServices();
 
         services.AddPersistence();
         services.AddPrintQueue();

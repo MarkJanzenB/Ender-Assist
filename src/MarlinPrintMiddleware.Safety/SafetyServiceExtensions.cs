@@ -11,7 +11,9 @@ public static class SafetyServiceExtensions
         services.AddSingleton<EmergencyStopService>();
         services.AddSingleton<IEmergencyStopService>(sp => sp.GetRequiredService<EmergencyStopService>());
         services.AddSingleton<IPauseResumeService, PauseResumeService>();
-        services.AddHostedService<ThermalSafetyService>();
+        services.AddSingleton<ThermalSafetyService>();
+        services.AddSingleton<IThermalWarningService>(sp => sp.GetRequiredService<ThermalSafetyService>());
+        services.AddHostedService(sp => sp.GetRequiredService<ThermalSafetyService>());
         return services;
     }
 }
